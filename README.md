@@ -1,62 +1,67 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class CoffeeSurvey {
-
+public class Survey {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        
-        // Questions to ask
-        String[] questions = {
-            "What is your rating of the dark roast coffee (1-poor, 2-fair, 3-good, 4-excellent, 5-outstanding)?",
-            "What is your rating of the medium roast coffee (1-poor, 2-fair, 3-good, 4-excellent, 5-outstanding)?",
-            "What is your rating of the light roast coffee (1-poor, 2-fair, 3-good, 4-excellent, 5-outstanding)?",
-            "What is your rating of the french vanilla coffee (1-poor, 2-fair, 3-good, 4-excellent, 5-outstanding)?",
-            "What is your rating of the caramel coffee (1-poor, 2-fair, 3-good, 4-excellent, 5-outstanding)?"
+
+        // different types of coffee stored in String array
+        String[] coffeeTypes = {
+                "dark roast coffee",
+                "medium roast coffee",
+                "light roast coffee",
+                "french vanilla coffee",
+                "caramel coffee"
         };
-        
-        int[] ratings = new int[5];
-        int totalScore = 0;
-        
-        // Loop through each question and collect ratings
-        for (int i = 0; i < questions.length; i++) {
-            int rating = -1;
+
+        // ratings for each coffee stored in integer array
+        int[] ratings = new int[coffeeTypes.length];
+
+        // Variable for total
+        int total = 0;
+
+        System.out.println("Please rate each coffee type from 1 (poor) to 5 (outstanding)\n");
+
+        // Loop for each coffee type rating
+        for (int i = 0; i < coffeeTypes.length; i++) {
             boolean validInput = false;
-            
-            // Ensure valid input is entered
+
             while (!validInput) {
+
+                // exception handling for invalid types
                 try {
-                    System.out.println(questions[i]);
-                    System.out.print("Please enter a rating (1-5): ");
-                    rating = Integer.parseInt(scanner.nextLine());
-                    
-                    // Check if the rating is within valid range
-                    if (rating >= 1 && rating <= 5) {
-                        validInput = true;
-                        ratings[i] = rating;
-                        totalScore += rating;
+                    System.out.printf(
+                            "What is your rating of the %s (1-poor, 2-fair, 3-good, 4-excellent, 5-outstanding)? ",
+                            coffeeTypes[i]);
+                    ratings[i] = scanner.nextInt();
+
+                    // rating must be between 1 and 5
+                    if (ratings[i] < 1 || ratings[i] > 5) {
+                        System.out.println("Please enter a number between 1 and 5.");
                     } else {
-                        System.out.println("Invalid input. Please enter a rating between 1 and 5.");
+                        validInput = true;
+                        total += ratings[i];
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid input. Please enter a numeric value between 1 and 5.");
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a number between 1 and 5.");
+                    scanner.next(); // Clear the invalid input
                 }
             }
         }
-        
-        // Display the stars for each rating
-        System.out.println("\nSurvey Results:");
-        for (int i = 0; i < ratings.length; i++) {
-            System.out.print("Rating for question " + (i + 1) + ": ");
-            for (int j = 0; j < ratings[i]; j++) {
+
+        // Display stars for each rating
+        System.out.println("\nYour ratings visualized:");
+        for (int rating : ratings) {
+            System.out.print(" ");
+            for (int j = 0; j < rating; j++) {
                 System.out.print("*");
             }
-            System.out.println();
         }
-        
-        // Calculate and display the average rating
-        double averageRating = totalScore / 5.0;
-        System.out.printf("\nYour average rating is %.1f\n", averageRating);
-        
+
+        // Calculate and display average
+        double average = (double) total / ratings.length;
+        System.out.printf("\n\nYour average rating is %.1f\n", average);
+
         scanner.close();
-    }
-}
+
+
